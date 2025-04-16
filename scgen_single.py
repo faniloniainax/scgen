@@ -129,7 +129,31 @@ def WrapAddress(addr: str) -> str:
         d'adapter les addresses longues
         à la disposition de la carte.
     '''
-    return addr[0:13] + "\n" + addr[13::]
+    SPACE_LENGTH  = 6
+    COMMON_LENGTH = 13
+    currentMaxLength = 390
+    wrappedAddress = []
+    currentLength  = 0
+    lastPos = 0
+
+    for i in range(0, len(str(addr))):
+        added = 0
+        c = addr[i]
+
+        if c.isspace():
+            added = SPACE_LENGTH
+        else:
+            added = COMMON_LENGTH
+
+        if currentLength + added >= currentMaxLength:
+            wrappedAddress += [addr[lastPos:i]]
+            lastPos = i
+            currentMaxLength = 194
+            currentLength = 0
+        else:
+            currentLength += added
+
+    return wrappedAddress
 
 def MakeCardFront(s: Student, c: Class):
     '''
@@ -171,8 +195,19 @@ def MakeCardFront(s: Student, c: Class):
     ## Finalement, le numéro de téléphone, l'e-mail, et l'adresse exacte.
     drawer.text(PHONE_NUMBER_POS, s.phoneNumber, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
     drawer.text(EMAIL_POS, s.email, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
-    drawer.text(ADDRESS_POS, WrapAddress(s.studentAddress), font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
 
+    def DrawAddress(wrapped: list[str]):
+        currentX = 785
+        currentY = 638
+
+        for part in wrapped:
+            drawer.text((currentX, currentY), part, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+            currentX  = 673
+            currentY += 25
+
+        pass
+
+    DrawAddress(WrapAddress(s.studentAddress.strip()))
     return cardFront
 
 def MakeCardBack(s: Student):
