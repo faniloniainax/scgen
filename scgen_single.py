@@ -242,7 +242,7 @@ def MakeStudentCard(s: Student, c: Class) -> None:
         cardFront = MakeCardFront(s, c)
         cardBack  = MakeCardBack(s)
     except FileNotFoundError as e:
-        print(f"L'étudiant {s.standardized()} ne possède pas de photo.")
+        print(f"L'étudiant {s.id} - {(s.firstName + " " + s.lastName).strip()} ne possède pas de photo.")
         return
 
     outDir = os.path.join(OUTPUT_DIRECTORY, f"{c.stage} {c.branch}")
