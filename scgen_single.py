@@ -244,7 +244,7 @@ def MakeCardBack(s: Student):
         
         img.paste(rotatedStamp, pos, rotatedStamp)
 
-    DrawStamp(cardBack, "20 FEV. 2024", SCHOOL_STAMP_POS)
+    DrawStamp(cardBack, "25 JAN. 2025", SCHOOL_STAMP_POS)
     DrawStamp(cardBack, "05 MAR. 2025", MEDIC_STAMP_POS)
 
     return cardBack
