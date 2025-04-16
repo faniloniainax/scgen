@@ -116,12 +116,12 @@ def GetPhotoPath(s: Student) -> str:
         d'importer la photo d'un étudiant,
         la photo doit être en JPEG.
     '''
-    maybePath = os.path.join(PHOTO_FOLDER, s.id)
+    maybePath = os.path.join(PHOTO_FOLDER, s.id) + ".jpg"
 
-    if os.path.exists(maybePath + ".jpg"):
-        return maybePath + ".jpg"
+    if os.path.exists(maybePath):
+        return maybePath
     
-    return os.path.join(PHOTO_FOLDER, "null.jpg")
+    return os.path.join(PHOTO_FOLDER, "null.png")
 
 def WrapAddress(addr: str) -> str:
     '''
@@ -237,13 +237,8 @@ def MakeStudentCard(s: Student, c: Class) -> None:
         Fonction qui se charge de créer une
         carte d'étudiant pour une variable donnée.
     '''
-
-    try:
-        cardFront = MakeCardFront(s, c)
-        cardBack  = MakeCardBack(s)
-    except FileNotFoundError as e:
-        print(f"L'étudiant {s.id} - {(s.firstName + " " + s.lastName).strip()} ne possède pas de photo.")
-        return
+    cardFront = MakeCardFront(s, c)
+    cardBack  = MakeCardBack(s)
 
     outDir = os.path.join(OUTPUT_DIRECTORY, f"{c.stage} {c.branch}")
     totalWidth = cardFront.width + cardBack.width
