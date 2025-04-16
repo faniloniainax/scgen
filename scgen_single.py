@@ -94,8 +94,20 @@ def ExtractCorrectID(idPrototype: str) -> str:
     '''
     ## Pour prévenir n'importe quelles bêtises
     ## des étudiants, les ID sont paddés à 4.
-    numericId = idPrototype[0:4]
-    rest = idPrototype[4:].strip().lower()
+
+    i = 0
+    numericId = ""
+
+    while i < len(idPrototype):
+        c = idPrototype[i]
+
+        if not c.isdigit():
+            break
+        
+        numericId += c
+        i += 1
+
+    rest = idPrototype[i:].strip().lower()
 
     if len(rest) == 0:
         return numericId
@@ -135,8 +147,10 @@ def WrapAddress(addr: str) -> str:
     wrappedAddress = []
     currentLength  = 0
     lastPos = 0
+    i = 0
+    addr = str(addr)
 
-    for i in range(0, len(str(addr))):
+    while i < len(addr):
         added = 0
         c = addr[i]
 
@@ -153,6 +167,9 @@ def WrapAddress(addr: str) -> str:
         else:
             currentLength += added
 
+        i += 1
+
+    wrappedAddress += [addr[lastPos:i]]
     return wrappedAddress
 
 def MakeCardFront(s: Student, c: Class):
@@ -258,4 +275,7 @@ if __name__ == "__main__":
     excelFile.fillna(" ") # Les NaN sont des chaînes vides.
 
     for _, row in excelFile.iterrows():
-        MakeStudentCard(Student(row), Class("L1", "PRO"))
+        s = Student(row)
+
+        print(f"Parsing {s.id}...")
+        MakeStudentCard(s, Class("L1", "IG"))
