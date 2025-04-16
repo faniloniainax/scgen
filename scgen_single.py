@@ -183,9 +183,9 @@ def MakeCardBack(s: Student):
     cardBack  = Image.open(BACK_TEMPLATE).convert("RGBA")
 
     def DrawStamp(img, text: str, pos):
-        stampImage = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
+        stampImage = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
         stampDrawer = ImageDraw.Draw(stampImage)
-        stampFont = ImageFont.truetype(STAMP_FONT_PATH, 26)
+        stampFont = ImageFont.truetype(STAMP_FONT_PATH, 30)
 
         stampDrawer.text((0, 0), text, font=stampFont, fill=STAMP_COLOR + (180,))
         rotatedStamp = stampImage.rotate(-10, expand=1)
