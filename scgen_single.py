@@ -20,7 +20,7 @@ class Student:
         self.phoneNumber = str(row[PHONE_NUMBER_HEADER]).strip()
         self.email = str(row[EMAIL_HEADER]).strip().lower()
         self.studentAddress = str(row[ADDRESS_HEADER]).strip()
-        self.studentNICNumber = str(row[NIC_NUMBER_HEADER]).strip() 
+        self.studentNICNumber = FormatNICNumber(row[NIC_NUMBER_HEADER]) 
 
         self.firstName, self.lastName = ExtractFullAndLastNames(row[FULL_NAME_HEADER])
         self.dob, self.pob = ExtractDateAndPlace(str(row[DOB_AND_POB_HEADER]))
@@ -35,7 +35,24 @@ class Student:
         return f"Student({self.id}, {self.firstName}, {self.lastName}, {self.dob}, {self.pob}, {self.phoneNumber}, {self.email}, [{self.studentAddress}], {self.studentNICNumber}, {self.dNIC}, [{self.pNIC}])"
 
     def standardized(self) -> str:
-        return f"Numéro {self.id} - {(self.firstName + ' ' + self.lastName).strip()} CIN {self.studentNICNumber}"
+        cinInfo = ""
+
+        if len(self.studentNICNumber) > 0:
+            cinInfo = f"{self.studentNICNumber} {self.dNIC} à {self.pNIC}"
+
+        return f"{self.id} {(self.firstName + ' ' + self.lastName).strip()} {self.dob} à {self.pob} {self.phoneNumber} {self.email} {self.studentAddress} {cinInfo}"
+
+def FormatNICNumber(src: str) -> str:
+    clean = str(src).replace(" ", "")
+    dest = ""
+
+    for i in range(0, len(clean), 3):
+        for j in range(0, 3):
+            dest += clean[i + j]
+        
+        dest += " "
+
+    return dest.strip()
 
 def ExtractFullAndLastNames(fullName: str) -> List[str]:
     '''
@@ -122,8 +139,8 @@ def MakeCardFront(s: Student, c: Class):
     cardFront = Image.open(FRONT_TEMPLATE).convert("RGBA")
     drawer = ImageDraw.Draw(cardFront)
 
-    nameFont = ImageFont.truetype(TEXT_FONT_PATH, 22)
-    textFont = ImageFont.truetype(TEXT_FONT_PATH, 18)
+    nameFont = ImageFont.truetype(TEXT_FONT_PATH, 30)
+    textFont = ImageFont.truetype(TEXT_FONT_PATH, 22)
 
     ## D'abord, la photo d'identité:
     identityPic = Image.open(GetPhotoPath(s)).resize(ID_PIC_SIZE)
@@ -134,27 +151,27 @@ def MakeCardFront(s: Student, c: Class):
     cardFront.paste(qrCode, QR_POS)
 
     ## Le nom complet de l'étudiant.
-    drawer.text(FIRST_NAME_POS, s.firstName, font=nameFont, fill=BLACK_COLOR)
-    drawer.text(LAST_NAME_POS, s.lastName, font=nameFont, fill=LAST_NAME_COLOR)
+    drawer.text(FIRST_NAME_POS, s.firstName, font=nameFont, fill=BLACK_COLOR, stroke_width=0.80)
+    drawer.text(LAST_NAME_POS, s.lastName, font=nameFont, fill=LAST_NAME_COLOR, stroke_width=0.75)
 
     ## Le numéro matricule, le niveau, et le parcours.
-    drawer.text(ID_NUMBER_POS, s.id, font=textFont, fill=WHITE_COLOR)
-    drawer.text(STAGE_POS, c.stage, font=textFont, fill=WHITE_COLOR)
-    drawer.text(BRANCH_POS, c.branch, font=textFont, fill=WHITE_COLOR)
+    drawer.text(ID_NUMBER_POS, s.id, font=textFont, fill=WHITE_COLOR, stroke_width=0.75)
+    drawer.text(STAGE_POS, c.stage, font=textFont, fill=WHITE_COLOR, stroke_width=0.75)
+    drawer.text(BRANCH_POS, c.branch, font=textFont, fill=WHITE_COLOR, stroke_width=0.75)
 
     ## La date et le lieu de naissance.
-    drawer.text(DOB_POS, s.dob, font=textFont, fill=BLACK_COLOR)
-    drawer.text(POB_POS, s.pob, font=textFont, fill=BLACK_COLOR)
+    drawer.text(DOB_POS, s.dob, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+    drawer.text(POB_POS, s.pob, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
 
     ## Le numéro de CIN, la date et lieu de délivrance.
-    drawer.text(NIC_NUMBER_POS, s.studentNICNumber, font=textFont, fill=BLACK_COLOR)
-    drawer.text(NIC_DATE_POS, s.dNIC, font=textFont, fill=BLACK_COLOR)
-    drawer.text(NIC_PLACE_POS, s.pNIC, font=textFont, fill=BLACK_COLOR)
+    drawer.text(NIC_NUMBER_POS, s.studentNICNumber, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+    drawer.text(NIC_DATE_POS, s.dNIC, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+    drawer.text(NIC_PLACE_POS, s.pNIC, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
 
     ## Finalement, le numéro de téléphone, l'e-mail, et l'adresse exacte.
-    drawer.text(PHONE_NUMBER_POS, s.phoneNumber, font=textFont, fill=BLACK_COLOR)
-    drawer.text(EMAIL_POS, s.email, font=textFont, fill=BLACK_COLOR)
-    drawer.text(ADDRESS_POS, WrapAddress(s.studentAddress), font=textFont, fill=BLACK_COLOR)
+    drawer.text(PHONE_NUMBER_POS, s.phoneNumber, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+    drawer.text(EMAIL_POS, s.email, font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
+    drawer.text(ADDRESS_POS, WrapAddress(s.studentAddress), font=textFont, fill=BLACK_COLOR, stroke_width=0.75)
 
     return cardFront
 
@@ -211,4 +228,4 @@ if __name__ == "__main__":
     excelFile.fillna(" ") # Les NaN sont des chaînes vides.
 
     for _, row in excelFile.iterrows():
-        MakeStudentCard(Student(row), Class("L3", "GB"))
+        MakeStudentCard(Student(row), Class("L1", "PRO"))
