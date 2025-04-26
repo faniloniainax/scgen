@@ -48,7 +48,11 @@ def FormatNICNumber(src: str) -> str:
         d'un étudiant en espacant les chiffres
         par lots de 3.
     '''
+    clean = str(src).replace(" ", "").strip()
     dest = ""
+
+    if len(clean) == 0:
+        return ""
 
     for i in range(0, len(clean), 3):
         for j in range(0, 3):
