@@ -32,6 +32,15 @@ Pour utiliser le script, il faut s'assurer d'avoir au préalable un fichier `inp
 
 ### Configuration
 Par ailleurs, il est aussi nécessaire de modifier la variable `SHEETS_MAP` dans le fichier `scgen_xlconfig.py`, pour spécifier les différentes feuilles du classeur que le script devra lire. A droite, il faut spécifier le nom de la feuille, et à gauche le constructeur de la classe `Class`, qui permettra de référencer certaines informations. Le constructeur prendra en argument le niveau et le parcours.
+E.g.: pour ajouter la classe `L3 XD`, dont les données appartiennent à la feuille `L3XD1`, il suffit d'ajouter l'entrée au dictionnaire:
+```diff
+SHEETS_MAP = {
+    "L1PRO": Class("L1", "PRO"),
+    # etc...
++   "L3XD1": Class("L3", "XD"),
+}
+
+```
 
 ### Lancement
 Pour éxécuter le script, lancez-le avec la commande:
