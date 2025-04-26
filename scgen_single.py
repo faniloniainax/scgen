@@ -4,11 +4,7 @@ import qrcode
 import pandas as pd
 import os
 from typing import List
-
-class Class:
-    def __init__(self, stage: str, branch: str):
-        self.stage = stage
-        self.branch = branch
+import sys
 
 class Student:
     '''
@@ -286,11 +282,19 @@ def MakeStudentCard(s: Student, c: Class) -> None:
 if __name__ == "__main__":
     os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
-    excelFile = pd.read_excel(INPUT_EXCEL_FILE)
-    excelFile.fillna(" ") # Les NaN sont des chaînes vides.
+    sheetNames = SHEETS_MAP.keys()
+    classValues = SHEETS_MAP.values()
 
-    for _, row in excelFile.iterrows():
-        s = Student(row)
+    for sheetName, classValue in zip(sheetNames, classValues):
+        excelFile = pd.read_excel(INPUT_EXCEL_FILE, sheet_name=sheetName)
+        excelFile.fillna(" ") # Les NaN sont des chaînes vides.
 
-        print(f"Parsing {s.id}...")
-        MakeStudentCard(s, Class("L1", "IG"))
+        for _, row in excelFile.iterrows():
+            try:
+                s = Student(row)
+
+                MakeStudentCard(s, classValue)
+                print(f"[{sheetName}]: Carte d'étudiant N° {s.id} créée avec succès !")
+        
+            except Exception as e:
+                print(f"[{sheetName}]: Erreur lors de la création de la carte d'étudiant N° {s.id} ! ({e})", file=sys.stderr)
