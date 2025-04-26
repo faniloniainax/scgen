@@ -2,6 +2,21 @@
 ## du fichier Excel, plus précisément
 ## le nom des headers.
 
+class Class:
+    def __init__(self, stage: str, branch: str):
+        self.stage = stage
+        self.branch = branch
+
+## Voici la map pour les recherches
+## des feuilles Excel et des classes.
+## Le nom de la feuille est la clé (à gauche)
+## et la classe est la valeur (à droite).
+SHEETS_MAP = {
+    "L1PRO": Class("L1", "PRO"),
+    "L1IG": Class("L1", "IG"),
+    "L2IG": Class("L2", "IG"),
+}
+
 ID_HEADER           = "Numéro matricule"
 FULL_NAME_HEADER    = "NOM & Prénom(s)"
 DOB_AND_POB_HEADER  = "Date et Lieu de naissance"
