@@ -43,7 +43,11 @@ class Student:
         return f"{self.id} {(self.firstName + ' ' + self.lastName).strip()} {self.dob} à {self.pob} {self.phoneNumber} {self.email} {self.studentAddress} {cinInfo}"
 
 def FormatNICNumber(src: str) -> str:
-    clean = str(src).replace(" ", "")
+    '''
+        Fonction qui formate le numéro de CIN
+        d'un étudiant en espacant les chiffres
+        par lots de 3.
+    '''
     dest = ""
 
     for i in range(0, len(clean), 3):
