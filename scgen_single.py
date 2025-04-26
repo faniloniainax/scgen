@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from scgen_xlconfig import *
 import qrcode
 import pandas as pd
@@ -184,7 +184,14 @@ def MakeCardFront(s: Student, c: Class):
     textFont = ImageFont.truetype(TEXT_FONT_PATH, 22)
 
     ## D'abord, la photo d'identité:
-    identityPic = Image.open(GetPhotoPath(s)).resize(ID_PIC_SIZE)
+    identityPic = Image.open(GetPhotoPath(s))
+    identityPic = ImageOps.exif_transpose(identityPic)
+
+    ## Pour éviter les problèmes de rapetissement,
+    ## on va rogner l'image pour une ratio de 1:1.
+    identityPic = identityPic.crop((0, 0, identityPic.width, identityPic.width))
+
+    identityPic = identityPic.resize(ID_PIC_SIZE)
     cardFront.paste(identityPic, ID_PIC_POS)
 
     ## Ensuite, le code QR pour les données:
